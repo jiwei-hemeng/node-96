@@ -17,11 +17,20 @@ app.use(
     origin: true,
     credentials: true,
   })
-); // 跨域的中间件，必须放到最开头
+); 
 
+// 跨域的中间件，必须放到最开头
 // app.use((req, res, next) => {
 //     res.setHeader('Access-Control-Allow-Origin', "http://localhost:8080");
 // });
+
+// 设置请求体
+// 当请求体为：application/json时设置
+// app.use(express.json());
+// 当请求体为：application/x-www-form-urlencoded时设置
+// app.use(express.urlencoded({
+//    extended: false;
+// }));
 
 // 配置session中间件
 app.use(
