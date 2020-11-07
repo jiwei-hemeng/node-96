@@ -1,5 +1,4 @@
 // 存放 获取英雄、添加、修改、删除、等等和英雄相关的 路由 （接口）
-// 加载核心模块
 const path = require("path");
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" }); // 配置上传文件的存放目录
@@ -14,16 +13,8 @@ const router = express.Router();
 
 // 添加英雄接口
 router.post("/addhero", upload.single("heroIcon"), (req, res) => {
-  // console.log(req.file); // 存放了上传后的文件信息
-  /*
-   * req.file.filename 是上传之后的文件名
-   * */
-  // console.log(req.body); // 存放了除文件之外的其他文本信息，比如 名字、昵称、技能
-  /*
-    { heroName: '菲奥娜', heroNickName: '无双剑姬', skillName: '动感光波3' }
-     */
   // 添加提交的信息到数据库
-  let sql = "insert into heroes set ?";
+  let sql = "insert into herose set ?";
   let values = {
     heroname: req.body.heroName,
     nickname: req.body.heroNickName,
@@ -31,7 +22,7 @@ router.post("/addhero", upload.single("heroIcon"), (req, res) => {
     img_url: req.file.filename,
   };
   db(sql, values, (err, result) => {
-    // console.log(err);
+    console.log(err);
     if (err || result.affectedRows < 1) {
       res.json({ status: 1, message: "添加失败" });
     } else {
@@ -56,8 +47,8 @@ router.get("/heroeslist", async (req, res) => {
   }
 
   // 查询总记录数，并计算总页数
-  let sql1 = "select count(*) cc from heroes" + w;
-  let sql2 = `select * from heroes ${w} order by id limit ${
+  let sql1 = "select count(*) cc from herose" + w;
+  let sql2 = `select * from herose ${w} order by id limit ${
     (pagenum - 1) * pagesize
   }, ${pagesize}`;
 
@@ -80,7 +71,7 @@ router.get("/deletehero", (req, res) => {
     res.json({ status: 1, message: "参数不正确" });
   }
   // 写SQL，完成删除
-  db("delete from heroes where id=?", id, (err, result) => {
+  db("delete from herose where id=?", id, (err, result) => {
     if (err || result.affectedRows < 1) {
       res.json({ status: 1, message: "删除失败" });
     } else {
@@ -96,7 +87,7 @@ router.get("/detail/:id", (req, res) => {
   if (!id || isNaN(id)) {
     res.json({ status: 1, message: "id不可用" });
   }
-  db("select * from heroes where id=?", id, (err, result) => {
+  db("select * from herose where id=?", id, (err, result) => {
     if (err) return console.log(err);
     /*
         result = [{id: 1, heroname: 'xxx', nickname: 'yyy', ...}]
@@ -124,7 +115,7 @@ router.post("/updatehero", upload.single("heroIcon"), (req, res) => {
     values.img_url = req.file.filename;
   }
   //
-  let sql = "update heroes set ? where id = ?";
+  let sql = "update herose set ? where id = ?";
   db(sql, [values, req.body.id], (err, result) => {
     if (err || result.affectedRows < 1) {
       res.json({ status: 1, message: "更新失败" });

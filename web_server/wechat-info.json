@@ -1,6 +1,6 @@
 {
   "wechatConfig": {
-    "store": "FileStore_E:\\study\\Node\\node-js-master\\web_server\\wechat-info.json"
+    "store": "FileStore_E:\\study\\Node\\node-96\\web_server\\wechat-info.json"
   },
   "globalToken": {
     "count": 0
