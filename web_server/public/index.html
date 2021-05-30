@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bootstrap 101 Template</title>
+
+  <!-- Bootstrap -->
+  <link href="./lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="./lib/css/jquery.pagination.css">
+  <style>
+    .wrap {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: url('images/bg03.jpg') center bottom no-repeat;
+      overflow: auto;
+    }
+
+    .navbar-brand {
+      padding: 10px 15px;
+    }
+
+    .logout {
+      font-weight: 900;
+      font-size: 20px;
+      color: #ff0000;
+      text-decoration: none;
+    }
+
+    .logout:hover {
+      text-decoration: none;
+      color: yellowgreen;
+    }
+
+    #my-table th {
+      text-align: center;
+    }
+
+    #my-table td {
+      text-align: center;
+      line-height: 80px;
+      padding: 0;
+      padding: 10px;
+    }
+
+    td img {
+      width: 80px;
+      height: 80px;
+    }
+
+    .username {
+      font-weight: 900;
+      color: hotpink;
+      background-color: yellowgreen;
+    }
+
+    .pagination {
+      margin: 0px;
+      padding: 0px;
+      font-size: 0;
+      line-height: 1;
+    }
+
+    .pagination li {
+      display: inline-block;
+      font-size: 14px;
+    }
+
+    .mp15 {
+      margin-top: 15px;
+    }
+
+    .table {
+      margin-bottom: 0;
+    }
+
+    .table-bordered>thead>tr>td,
+    .table-bordered>thead>tr>th {
+      border-bottom-width: 1px;
+    }
+
+    .page-title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <nav class="navbar  navbar-inverse navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#mymenu">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><img src="images/logo.png"></a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+              <div class="row">
+                <div class="col-md-6 page-title">英雄列表</div>
+                <div class="col-md-6 text-right">当前位置：首页</div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <!-- action 不写 就是当前页面 method 不写 就是 get -->
+              <div class="row">
+                <div class="col-md-9">
+                  <form class="search-form form-inline">
+                    <div class="form-group">
+                      <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
+                      <div class="input-group">
+                        <div class="input-group-addon">英雄姓名</div>
+                        <input type="text" value="" class="form-control" id="search" placeholder="请输入查询内容" />
+                      </div>
+                    </div>
+                    <button type="submit" class="btn btn-default">查找</button>
+
+                  </form>
+                </div>
+                <div class="col-md-3">
+                  <a href="./add.html" class="btn btn-success pull-right">新增</a>
+                </div>
+
+              </div>
+
+              <table id="my-table" class="table table-bordered mp15">
+                <thead>
+                  <tr>
+                    <th width="20%">头像</th>
+                    <th width="20%">姓名</th>
+                    <th width="20%">昵称</th>
+                    <th width="20%">技能</th>
+                    <th width="20%">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+
+                </tbody>
+              </table>
+            </div>
+            <div class="panel-footer text-center">
+              <div id="pagination" class="page"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="./lib/bootstrap/js/jquery-1.12.4.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="./lib/bootstrap/js/bootstrap.min.js"></script>
+  <script src="./lib/js/jquery.pagination.min.js"></script>
+  <script src="./lib/js/template-web.js"></script>
+
+  <script type="text/html" id="moban">
+    {{each arr val}}
+    <tr>
+        <td><img src="http://localhost:3006/{{val.img_url}}" alt=""/></td>
+        <td>{{val.heroname}}</td>
+        <td>{{val.nickname}}</td>
+        <td>{{val.skill}}</td>
+        <td>
+            <button onclick="location.href='./edit.html?id={{val.id}}'" class="btn btn-primary">编辑</button>
+            <button data-id="{{val.id}}" class="btn btn-danger">删除</button>
+        </td>
+    </tr>
+    {{/each}}
+</script>
+
+  <script>
+    $.ajaxPrefilter(function (option) {
+      option.url = 'http://localhost:3006' + option.url;
+      option.headers = {
+        Authorization: sessionStorage.getItem('token')
+      };
+      option.complete = function (xhr) {
+        if (xhr.responseJSON.status === 1 && xhr.responseJSON.message === '身份认证失败') {
+          sessionStorage.removeItem('token');
+          location.href = 'login.html';
+        }
+      }
+    });
+
+    var data = {
+      pagenum: 1
+    }
+
+    // ----------------------------  获取英雄，并渲染到页面 ---------------
+    function loadData() {
+      $.get('/my/heroeslist', data, function (res) {
+        console.log(res);
+        // 调用template函数
+        var str = template('moban', {
+          arr: res.data
+        });
+        // 把str放到tbody中
+        $('tbody').html(str);
+        // 渲染完页面，显示页码
+        showPage(res.total);
+      }, 'json');
+    }
+
+    loadData();
+
+    // ------------------- 分页 ---------------
+    function showPage(t) {
+      $("#pagination").pagination({
+        currentPage: data.pagenum,
+        totalPage: t,
+        callback: function (current) {
+          data.pagenum = current;
+          loadData();
+        }
+      });
+    }
+
+
+    // ---------------------------   模糊搜索 -------------------------
+    $('.search-form').submit(function (e) {
+      e.preventDefault()
+      var searchValue = $('#search').val().trim();
+      if (searchValue) {
+        data.keywords = searchValue;
+      } else {
+        data.keywords = '';
+      }
+      loadData();
+    });
+    // ---------------------------   删除功能 -------------------------
+    $('body').on('click', '.btn-danger', function (e) {
+      e.preventDefault();
+      if (!window.confirm('你确定删除吗')) {
+        return;
+      }
+      // 获取id
+      var id = this.dataset.id; // $(this).attr('data-id');
+      // 发送ajax请求，完成删除
+      $.get('/my/deletehero', { id: id }, function (res) {
+        alert(res.message);
+        if (res.status === 0) {
+          // 重新渲染页面
+          loadData();
+        }
+      });
+    });
+  </script>
+
+</body>
+
+</html>

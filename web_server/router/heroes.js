@@ -1,7 +1,9 @@
 // 存放 获取英雄、添加、修改、删除、等等和英雄相关的 路由 （接口）
 const path = require("path");
 const multer = require("multer");
-const upload = multer({ dest: "uploads/" }); // 配置上传文件的存放目录
+const upload = multer({
+  dest: "public/uploads/"
+}); // 配置上传文件的存放目录
 // 加载自定义的模块
 const db = require(path.join(__dirname, "../utils", "db.js"));
 const db2 = require(path.join(__dirname, "../utils", "db2.js"));
@@ -19,14 +21,19 @@ router.post("/addhero", upload.single("heroIcon"), (req, res) => {
     heroname: req.body.heroName,
     nickname: req.body.heroNickName,
     skill: req.body.skillName,
-    img_url: req.file.filename,
+    img_url: "/uploads/" + req.file.filename,
   };
   db(sql, values, (err, result) => {
-    console.log(err);
     if (err || result.affectedRows < 1) {
-      res.json({ status: 1, message: "添加失败" });
+      res.json({
+        status: 1,
+        message: "添加失败"
+      });
     } else {
-      res.json({ status: 0, message: "添加成功" });
+      res.json({
+        status: 0,
+        message: "添加成功"
+      });
     }
   });
 });
@@ -35,12 +42,8 @@ router.post("/addhero", upload.single("heroIcon"), (req, res) => {
 router.get("/heroeslist", async (req, res) => {
   // 接收请求参数，并设置默认值
   let pagenum = req.query.pagenum || 1; // 当前的页码
-  // console.log(pagenum);
   let pagesize = req.query.pagesize || 2; // 每页显示多少条
   let keywords = req.query.keywords || ""; // 搜索关键字
-  // console.log(keywords);
-
-  // 根据关键字，设置查询添加
   let w = "";
   if (keywords) {
     w = ` where heroname like '%${keywords}%' or nickname like '%${keywords}%' `;
@@ -68,14 +71,23 @@ router.get("/heroeslist", async (req, res) => {
 router.get("/deletehero", (req, res) => {
   let id = req.query.id;
   if (!id || isNaN(id)) {
-    res.json({ status: 1, message: "参数不正确" });
+    res.json({
+      status: 1,
+      message: "参数不正确"
+    });
   }
   // 写SQL，完成删除
   db("delete from herose where id=?", id, (err, result) => {
     if (err || result.affectedRows < 1) {
-      res.json({ status: 1, message: "删除失败" });
+      res.json({
+        status: 1,
+        message: "删除失败"
+      });
     } else {
-      res.json({ status: 0, message: "删除成功" });
+      res.json({
+        status: 0,
+        message: "删除成功"
+      });
     }
   });
 });
@@ -85,14 +97,13 @@ router.get("/detail/:id", (req, res) => {
   // 获取动态参数id
   let id = req.params.id; // req.params是express提供的属性，直接拿来使用，不用设置中间件
   if (!id || isNaN(id)) {
-    res.json({ status: 1, message: "id不可用" });
+    res.json({
+      status: 1,
+      message: "id不可用"
+    });
   }
   db("select * from herose where id=?", id, (err, result) => {
     if (err) return console.log(err);
-    /*
-        result = [{id: 1, heroname: 'xxx', nickname: 'yyy', ...}]
-        * */
-    console.log(result);
     res.json({
       status: 0,
       message: "获取一个英雄成功",
@@ -118,9 +129,15 @@ router.post("/updatehero", upload.single("heroIcon"), (req, res) => {
   let sql = "update herose set ? where id = ?";
   db(sql, [values, req.body.id], (err, result) => {
     if (err || result.affectedRows < 1) {
-      res.json({ status: 1, message: "更新失败" });
+      res.json({
+        status: 1,
+        message: "更新失败"
+      });
     } else {
-      res.json({ status: 0, message: "更新成功" });
+      res.json({
+        status: 0,
+        message: "更新成功"
+      });
     }
   });
 });

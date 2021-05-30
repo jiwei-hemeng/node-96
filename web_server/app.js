@@ -17,7 +17,7 @@ app.use(
     origin: true,
     credentials: true,
   })
-); 
+);
 
 // 跨域的中间件，必须放到最开头
 // app.use((req, res, next) => {
@@ -43,14 +43,20 @@ app.use(
 );
 
 // 开发静态资源（上传的图片）
-app.use(express.static(path.join(__dirname, "uploads")));
+app.use(express.static(path.join(__dirname, "public")));
 
 // 设置token
 const secretKey = "jiwei-96";
 // 解密模块，当有请求带着token请求，下面的中间件，可以把加密的token还原成对象
-app.use(expressJWT({ secret: secretKey }).unless({ path: [/^\/api\//] }));
+app.use(expressJWT({
+  secret: secretKey
+}).unless({
+  path: [/^\/api\//]
+}));
 // 接收类型为 application/x-www-form-urlencoded 类型的请求体
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}));
 
 app.listen(3006, () => console.log("server working at http://localhost:3006"));
 
@@ -61,6 +67,9 @@ app.use("/my", require(path.join(__dirname, "router", "heroes.js")));
 // 设置错误中间件(它必须放到所有的接口后面)
 app.use((err, req, res, next) => {
   if (err.name === "UnauthorizedError") {
-    res.json({ status: 1, message: "身份认证失败" });
+    res.json({
+      status: 1,
+      message: "身份认证失败"
+    });
   }
 });
