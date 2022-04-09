@@ -14,8 +14,8 @@ const app = express();
 // 跨域中间件
 app.use(
   cors({
-    origin: true,
-    credentials: true,
+    origin: true, // 发送请求的源
+    credentials: true, // 相应的请求源
   })
 );
 

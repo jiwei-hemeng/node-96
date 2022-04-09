@@ -208,7 +208,6 @@
     // ----------------------------  获取英雄，并渲染到页面 ---------------
     function loadData() {
       $.get('/my/heroeslist', data, function (res) {
-        console.log(res);
         // 调用template函数
         var str = template('moban', {
           arr: res.data
